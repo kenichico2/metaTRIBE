@@ -1,0 +1,7 @@
+.git
+*.md
+node_modules
+.next
+.vercel
+__pycache__
+*.pyc

@@ -2,13 +2,20 @@
 
 const KEY = "auto-excitement.backend-url";
 
+export function getEnvBackendUrl(): string {
+  const v = process.env.NEXT_PUBLIC_BACKEND_URL;
+  return v ? normalizeBackendUrl(v) : "";
+}
+
 export function loadBackendUrl(): string {
-  if (typeof window === "undefined") return "";
+  if (typeof window === "undefined") return getEnvBackendUrl();
   try {
-    return window.localStorage.getItem(KEY) ?? "";
+    const stored = window.localStorage.getItem(KEY);
+    if (stored) return stored;
   } catch {
-    return "";
+    /* ignore */
   }
+  return getEnvBackendUrl();
 }
 
 export function saveBackendUrl(url: string) {

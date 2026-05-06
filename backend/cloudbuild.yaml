@@ -1,0 +1,33 @@
+# Cloud Build configuration for the auto-excitement backend image.
+#
+# Submit with:
+#   gcloud builds submit \
+#     --config backend/cloudbuild.yaml \
+#     --substitutions=_REGION=us-central1,_REPO=auto-excitement,_IMAGE=server,_TAG=latest \
+#     backend
+#
+# (Or use backend/deploy.sh which wraps this and the Cloud Run deploy step.)
+
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --tag=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:${_TAG}
+      - --tag=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:latest
+      - .
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:${_TAG}
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:latest
+
+substitutions:
+  _REGION: us-central1
+  _REPO: auto-excitement
+  _IMAGE: server
+  _TAG: latest
+
+options:
+  machineType: E2_HIGHCPU_32
+  diskSizeGb: 200
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: 3600s
